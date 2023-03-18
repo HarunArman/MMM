@@ -43,7 +43,7 @@ create_files <- TRUE
 #### Step 1: Load data
 
 ## Check simulated dataset or load your own dataset
-mmmData <- read_csv("mmm-data.csv",show_col_types = FALSE)
+mmmData <- read_csv("data17mart.csv",show_col_types = FALSE)
 head(mmmData)
 colnames(mmmData)[colnames(mmmData) == "Rakip Firma Satışları"] ="Rakip_Firma_Satışları"
 ## Check holidays from Prophet
@@ -70,22 +70,31 @@ robyn_object <- "~/mmm_proj/MyRobyn.RDS"
 InputCollect <- robyn_inputs(
   dt_input = mmmData,
   dt_holidays = dt_prophet_holidays,
-  date_var = "date", # date format must be "2020-01-01"
+  
+  date_var = "DATE", # date format must be "2020-01-01"
   dep_var = "revenue", # there should be only one dependent variable
   dep_var_type = "revenue", # "revenue" (ROI) or "conversion" (CPA)
-  prophet_vars = c("trend", "season", "holiday"), # "trend","season", "weekday" & "holiday"
+  
+  prophet_vars = c("trend", "season","holiday"), # "trend","season", "weekday" & "holiday"
+  prophet_signs = c("positive","positive","negative"),
   prophet_country = "TU", # input one country. dt_prophet_holidays includes 59 countries by default
-  context_vars = c("Rakip_Firma_Satışları", "Event"), # e.g. competitors, discount, unemployment etc
-  paid_media_spends = c("Facebook_S", "G_Search_S", "G_Video_S", "G_Display_S"), # mandatory input
-  paid_media_vars = c("Facebook_I", "G_Search_C", "G_Video_I", "G_Display_C"), # mandatory.
+  
+  context_vars = c("Rakip_Firma_Satışları","Event"), # e.g. competitors, discount, unemployment etc
+  context_signs = c("negative","positive"),
+  
+  paid_media_spends = c("Facebook_S","Instagram_S","Messenger_S", "G_Search_S", "G_Video_S" , "G_PMAX_S"), # mandatory input
+  paid_media_vars = c("Facebook_I","Instagram_I","Messenger_C", "G_Search_C", "G_Video_I", "G_PMAX_I"), # mandatory.
   # paid_media_vars must have same order as paid_media_spends. Use media exposure metrics like
   # impressions, GRP etc. If not applicable, use spend instead.
+  organic_vars = c("G_Organic_User"), # marketing activity without media spend
   factor_vars = c("Event"), # force variables in context_vars or organic_vars to be categorical
-  window_start = "2020-02-02",
+  window_start = "2021-07-18",
   window_end = "2023-01-29",
-  adstock = "geometric" # geometric, weibull_cdf or weibull_pdf.
+  adstock = "weibull_cdf", # geometric, weibull_cdf or weibull_pdf.
 )
+
 print(InputCollect)
+
 
 #### 2a-2: Second, define and add hyperparameters
 
@@ -104,8 +113,8 @@ hyper_names(adstock = InputCollect$adstock, all_media = InputCollect$all_media)
 
 ## 1. IMPORTANT: set plot = TRUE to create example plots for adstock & saturation
 ## hyperparameters and their influence in curve transformation
-plot_adstock(plot = FALSE)
-plot_saturation(plot = FALSE)
+plot_adstock(plot = TRUE)
+plot_saturation(plot = TRUE)
 
 ## 2. Get correct hyperparameter names:
 # All variables in paid_media_spends and organic_vars require hyperparameter and will be
@@ -173,16 +182,32 @@ hyper_limits()
 hyperparameters <- list(
   Facebook_S_alphas = c(0.5, 3),
   Facebook_S_gammas = c(0.3, 1),
-  Facebook_S_thetas = c(0, 0.3),
-  G_Display_S_alphas = c(0.5, 3),
-  G_Display_S_gammas = c(0.3, 1),
-  G_Display_S_thetas = c(0.1, 0.4),
+  Facebook_S_shapes = c(0, 2),
+  Facebook_S_scales = c(0, 0.1),
+  G_Organic_User_alphas = c(0.5, 3),
+  G_Organic_User_gammas = c(0.3, 1),
+  G_Organic_User_scales = c(0, 1),
+  G_Organic_User_shapes = c(0, 2),
+  G_PMAX_S_alphas = c(0.5, 3),
+  G_PMAX_S_gammas = c(0.3, 1),
+  G_PMAX_S_shapes = c(0, 2),
+  G_PMAX_S_scales = c(0, 0.1),
   G_Search_S_alphas = c(0.5, 3),
   G_Search_S_gammas = c(0.3, 1),
-  G_Search_S_thetas = c(0.1, 0.4),
+  G_Search_S_shapes = c(0, 2),
+  G_Search_S_scales = c(0, 0.1),
   G_Video_S_alphas = c(0.5, 3),
   G_Video_S_gammas = c(0.3, 1),
-  G_Video_S_thetas = c(0, 0.3),
+  G_Video_S_shapes = c(0, 2),
+  G_Video_S_scales = c(0, 0.1),
+  Instagram_S_alphas = c(0.5,3),
+  Instagram_S_gammas = c(0.3,1),
+  Instagram_S_scales = c(0,0.1),
+  Instagram_S_shapes = c(0,2),
+  Messenger_S_alphas = c(0.5,3),
+  Messenger_S_gammas = c(0.3,1),
+  Messenger_S_scales = c(0,0.1),
+  Messenger_S_shapes = c(0,2),
   train_size = c(0.5, 0.8)
 )
 
@@ -302,6 +327,7 @@ OutputModels <- robyn_run(
   add_penalty_factor = FALSE # Experimental feature. Use with caution.
 )
 print(OutputModels)
+
 
 ## Check MOO (multi-objective optimization) convergence plots
 # Read more about convergence rules: ?robyn_converge
