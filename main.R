@@ -82,8 +82,8 @@ InputCollect <- robyn_inputs(
   context_vars = c("Rakip_Firma_Satışları","Event"), # e.g. competitors, discount, unemployment etc
   context_signs = c("negative","positive"),
   
-  paid_media_spends = c("Facebook_S","Instagram_S","Messenger_S", "G_Search_S", "G_Video_S" , "G_PMAX_S"), # mandatory input
-  paid_media_vars = c("Facebook_I","Instagram_I","Messenger_C", "G_Search_C", "G_Video_I", "G_PMAX_I"), # mandatory.
+  paid_media_spends = c("Facebook_S","Instagram_S","G_Search_S", "G_Video_S" , "G_PMAX_S"), # mandatory input
+  paid_media_vars = c("Facebook_W","Instagram_W","G_Search_W", "G_Video_W", "G_Display_W", "G_PMAX_W"), # mandatory.
   # paid_media_vars must have same order as paid_media_spends. Use media exposure metrics like
   # impressions, GRP etc. If not applicable, use spend instead.
   organic_vars = c("G_Organic_User"), # marketing activity without media spend
