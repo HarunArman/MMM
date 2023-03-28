@@ -1,16 +1,3 @@
-# Copyright (c) Meta Platforms, Inc. and its affiliates.
-
-# This source code is licensed under the MIT license found in the
-# LICENSE file in the root directory of this source tree.
-
-#############################################################################################
-####################         Meta MMM Open Source: Robyn 3.10.0       #######################
-####################             Quick demo guide                     #######################
-#############################################################################################
-
-# Advanced marketing mix modeling using Meta Open Source project Robyn (Blueprint training)
-# https://www.facebookblueprint.com/student/path/253121-marketing-mix-models?utm_source=demo
-
 ################################################################
 #### Step 0: Setup environment
 
@@ -45,7 +32,6 @@ create_files <- TRUE
 ## Check simulated dataset or load your own dataset
 mmmData <- read_csv("data17mart.csv",show_col_types = FALSE)
 head(mmmData)
-colnames(mmmData)[colnames(mmmData) == "Rakip Firma Satışları"] ="Rakip_Firma_Satışları"
 ## Check holidays from Prophet
 # 59 countries included. If your country is not included, please manually add it.
 # Tipp: any events can be added into this table, school break, events etc.
@@ -79,7 +65,7 @@ InputCollect <- robyn_inputs(
   prophet_signs = c("positive","positive","negative"),
   prophet_country = "TU", # input one country. dt_prophet_holidays includes 59 countries by default
   
-  context_vars = c("Rakip_Firma_Satışları","Event"), # e.g. competitors, discount, unemployment etc
+  context_vars = c("Event"), # e.g. competitors, discount, unemployment etc
   context_signs = c("negative","positive"),
   
   paid_media_spends = c("Facebook_S","Instagram_S","G_Search_S", "G_Video_S" , "G_PMAX_S"), # mandatory input
