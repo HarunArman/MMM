@@ -10,7 +10,7 @@ options(future.fork.enable = TRUE)
 robyn_api_project_path <- setwd("/srv/shiny-server/optishiny/dashboard")
 
 ### environment path
-robyn_object <- readRDS(paste0(robyn_api_project_path , "api/allocator_output/robyn_object.RDS"))
+robyn_object <- readRDS(paste0(robyn_api_project_path , "/api/allocator_output/robyn_object.RDS"))
 robyn_object$listInit$OutputCollect$plot_folder <- "~/robyn_charts/"
 
 InputCollect <- robyn_object$listInit$InputCollect
